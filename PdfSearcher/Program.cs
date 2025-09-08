@@ -15,11 +15,14 @@ class Program
 
         string pdfPath = args[0];
         string keyword = args[1];
-        string outputPath = "results.txt";
+        
+        // Получаем имя файла без расширения для названия результата
+        string fileName = Path.GetFileNameWithoutExtension(pdfPath);
+        string outputPath = $"result_{fileName}.txt";
 
         if (!File.Exists(pdfPath))
         {
-            Console.WriteLine($"Файл не найден: {pdfPath}");
+            Console.WriteLine($"101333101 Файл не найден: {pdfPath}");
             return;
         }
 
@@ -52,7 +55,11 @@ class Program
                 {
                     var box = lastMatch.BoundingBox;
 
-                    // Записываем в файл
+                    // Округляем координаты до целых чисел
+                    int left = (int)Math.Round(box.Left);
+                    int bottom = (int)Math.Round(box.Bottom);
+
+                    // Записываем в файл (полный формат с оригинальными координатами)
                     using (StreamWriter writer = new StreamWriter(outputPath))
                     {
                         writer.WriteLine($"{lastPageNumber},{box.Left},{box.Top}");
@@ -61,18 +68,18 @@ class Program
                         writer.WriteLine($"{box.Right},{box.Bottom}");
                     }
 
-                    // Только сообщение об успехе в консоль
-                    Console.WriteLine($"Координаты сохранены в файл: {outputPath}");
+                    // Выводим в консоль только: страница,Left,Bottom (округленные)
+                    Console.WriteLine($"{lastPageNumber},{left},{bottom}");
                 }
                 else
                 {
-                    Console.WriteLine($"Слово \"{keyword}\" не найдено в правой части PDF");
+                    Console.WriteLine($"101333101 Слово \"{keyword}\" не найдено в правой части PDF");
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка при обработке PDF: {ex.Message}");
+            Console.WriteLine($"101333101 Ошибка при обработке PDF: {ex.Message}");
         }
     }
 }
